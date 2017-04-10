@@ -1,0 +1,5 @@
+https://github.com/semanticanalyzer/weka-mnb-sentiment-analysis-template-project
+https://habrahabr.ru/post/229779/
+https://www.ibm.com/developerworks/ru/library/os-weka3/
+https://weka.wikispaces.com/Use+WEKA+in+your+Java+code
+http://www.cs.waikato.ac.nz/ml/weka/documentation.html

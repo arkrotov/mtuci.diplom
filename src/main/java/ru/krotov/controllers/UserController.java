@@ -5,7 +5,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RestController;
 import ru.krotov.models.User;
-import ru.krotov.service.UserService;
+import ru.krotov.services.UserService;
 
 import java.util.List;
 

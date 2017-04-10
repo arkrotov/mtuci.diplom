@@ -1,25 +1,16 @@
 package analyzer;
 
-import analyzer.database.Database;
-import analyzer.network.Captor;
-import analyzer.network.IP;
+import ru.krotov.logics.network.Captor;
+import ru.krotov.logics.network.IP;
 import jpcap.JpcapCaptor;
-import jpcap.NetworkInterfaceAddress;
 import jpcap.packet.IPPacket;
 import jpcap.packet.Packet;
-import jpcap.packet.TCPPacket;
+import ru.krotov.services.GroupService;
 
 
-import java.io.BufferedWriter;
-import java.io.File;
-import java.io.FileWriter;
 import java.io.IOException;
-import java.net.InetAddress;
 import java.sql.Timestamp;
 import java.time.Instant;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.UUID;
 
 public class Main {
 
