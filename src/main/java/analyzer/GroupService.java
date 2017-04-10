@@ -1,31 +1,32 @@
 package analyzer;
 
 import analyzer.network.IP;
-import jpcap.packet.*;
+import jpcap.packet.TCPPacket;
+import jpcap.packet.UDPPacket;
 
 import java.io.File;
 import java.io.FileNotFoundException;
-import java.io.IOException;
 import java.io.PrintStream;
 import java.sql.Timestamp;
-import java.time.Instant;
 import java.util.ArrayList;
 import java.util.List;
 
 /**
  * Created by Me on 09.04.2017.
  */
+
 public class GroupService {
 
-    // Группа потоков
-    static volatile private List<List<IP>> groupFlow = new ArrayList<>();
-    static volatile private List<List<IP>> resultGroupFlow = new ArrayList<>();
+    // Группы потоков (служенбная, результирующая)
+    static private List<List<IP>> groupFlow = new ArrayList<>();
+    static private List<List<IP>> resultGroupFlow = new ArrayList<>();
 
 
-    static public int getResultSize () {
+    public static int getResultSize () {
         return resultGroupFlow.size();
     }
 
+    // Формирование потока
     public static void formFlow(IP currentPacket) {
 
 
@@ -67,6 +68,7 @@ public class GroupService {
 
     }
 
+    // Проверка на принадлежность к существующим потокам
     static private boolean belongToFlow(IP o1, IP o2) {
 
         if (o1.getPacket().protocol != o2.getPacket().protocol)
@@ -98,7 +100,7 @@ public class GroupService {
 
     }
 
-
+    // Вывод потоков на экран
     public static void soutFlows() {
 
         File file = new File("src/main/java/packets/test.txt");
@@ -113,7 +115,7 @@ public class GroupService {
         for (int i = 0; i < resultGroupFlow.size(); i++) {
             System.out.println("Поток №" + i);
 
-            List<IP> flow = groupFlow.get(i);
+            List<IP> flow = resultGroupFlow.get(i);
 
             Timestamp time = null;
             for (int j = 0; j < flow.size(); j++) {
@@ -135,5 +137,6 @@ public class GroupService {
             System.out.println();
         }
     }
+
 
 }
