@@ -1,6 +1,5 @@
 package ru.krotov.services;
 
-import ru.krotov.logics.network.IP;
 import jpcap.packet.TCPPacket;
 import jpcap.packet.UDPPacket;
 

@@ -1,41 +1,37 @@
-package ru.krotov.logics.network;
+package ru.krotov.models;
 
 import jpcap.packet.IPPacket;
+import lombok.Data;
 
 import java.sql.Timestamp;
 import java.time.Instant;
 import java.util.regex.Pattern;
 
-/**
- * Created by Me on 09.04.2017.
- */
-public class IP {
+@Data
+public abstract class IP {
 
-    private IPPacket packet;
-    private Timestamp timestamp;
-
-    public IP(IPPacket packet) {
-        this.packet = packet;
+    public IP(IPPacket ipPacket) {
+        this.ipPacket = ipPacket;
         timestamp = Timestamp.from(Instant.now());
     }
 
-    public IPPacket getPacket() {
-        return packet;
-    }
+    private IPPacket ipPacket;
+    private Timestamp timestamp;
 
-    public Timestamp getTimestamp() {
-        return timestamp;
-    }
 
-    public static boolean isToMe (IPPacket packet) {
+    public abstract int getTransportDataLength ();
+    public abstract int getTransportHeaderLength ();
+
+    public boolean isToMe () {
 
         final String FIRST_IP = "localhost";
         final String SECOND_IP = "95.165.131.144";
         final Pattern THIRD_IP = Pattern.compile("192.168.[0-2]?[0-2]?[0-5]?.[0-2]?[0-2]?[0-5]?");
 
-        String ip = packet.dst_ip.toString().substring(1);
+        String ip = ipPacket.dst_ip.toString().substring(1);
 
         return ip.equals(FIRST_IP) || ip.equals(SECOND_IP) || THIRD_IP.matcher(ip).matches();
     }
+
 
 }

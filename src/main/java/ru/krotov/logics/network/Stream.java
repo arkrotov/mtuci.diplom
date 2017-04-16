@@ -1,6 +1,6 @@
 package ru.krotov.logics.network;
 
-import jpcap.packet.IPPacket;
+import ru.krotov.models.IP;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -12,48 +12,48 @@ import java.util.List;
 public class Stream {
 
 
-    public Stream(List<IPPacket> flow) {
+    public Stream(List<IP> flow) {
 
-        double sizeOfPacketFromClient = 0;
-        double sizeOfPacketFromServer = 0;
-        double sizeDataFromClient = 0;
-        double sizeDataFromServer = 0;
+        double sizeOnTransportLayerFromClient = 0;
+        double sizeOnTransportLayerFromServer = 0;
+        double sizeDataOnTransportLayerFromClient = 0;
+        double sizeDataOnTransportLayerFromServer = 0;
         int toClient = 3;
         int numberOfServingsFromServer = 0;
         int numberOfServingsFromClient = 0;
 
-        for (IPPacket packet : flow) {
+        for (IP ipPacket : flow) {
 
-            if (IP.isToMe(packet)) {
+            if (ipPacket.isToMe()) {
 
                 if (toClient != 1) { numberOfServingsFromClient++; toClient = 1; }
 
-                sizeDataFromClient += packet.length;
-                sizeOfPacketFromClient += packet.data.length;
-                flowFromClient.add(packet);
+                sizeDataOnTransportLayerFromClient += ipPacket.getTransportDataLength();
+                sizeOnTransportLayerFromClient += ipPacket.getTransportDataLength() + ipPacket.getTransportHeaderLength();
+                flowFromClient.add(ipPacket);
                 sizesOfSegmentsFromClient.add((int) packet.length);
                 sizesOfDataFromClient.add(packet.data.length);
             } else {
 
                 if (toClient != 0) {numberOfServingsFromServer++; toClient = 0; }
 
-                sizeDataFromServer += packet.length;
-                sizeOfPacketFromServer += packet.data.length;
-                flowFromServer.add(packet);
+                sizeDataOnTransportLayerFromServer += ipPacket.getTransportDataLength();
+                sizeOnTransportLayerFromServer += ipPacket.getTransportDataLength() + ipPacket.getTransportHeaderLength();
+                flowFromServer.add(ipPacket);
                 sizesOfSegmentsFromServer.add((int) packet.length);
                 sizesOfDataFromServer.add(packet.data.length);
             }
         }   //КПД клиента – количество переданной нагрузки прикладного уровня,
         //делённое на общее количество переданной нагрузки прикладного и транспортного уровня
 
-        averageSizeOfPacketFromClient = sizeOfPacketFromClient / flowFromClient.size();
-        averageSizeOfPacketFromServer = sizeOfPacketFromServer / flowFromServer.size();
-        averageSizeOfDataFromClient = sizeDataFromClient / flowFromClient.size();
-        averageSizeOfDataFromServer = sizeDataFromServer / flowFromServer.size();
-        standardDeviationOfDataSizeFromClient = standardDeviation(sizesOfDataFromClient);
-        standardDeviationOfDataSizeFromServer = standardDeviation(sizesOfDataFromServer);
+        averageSizeOnTransportLayerFromClient = sizeOnTransportLayerFromClient / flowFromClient.size();
+        averageSizeOnTransportLayerFromServer = sizeOnTransportLayerFromServer / flowFromServer.size();
+        averageSizeDataOnTransportLayerFromClient = sizeDataOnTransportLayerFromClient / flowFromClient.size();
+        averageSizeDataOnTransportLayerFromServer = sizeDataOnTransportLayerFromServer / flowFromServer.size();
         standardDeviationOfPacketSizeFromClient = standardDeviation(sizesOfSegmentsFromClient);
         standardDeviationOfPacketSizeFromServer = standardDeviation(sizesOfSegmentsFromServer);
+        standardDeviationOfDataOnTransportLayerFromClien = standardDeviation(sizesOfDataFromClient);
+        standardDeviationOfDataOnTransportLayerFromServer = standardDeviation(sizesOfDataFromServer);
         averageNumberOfDataPacketsFromClient = sizesOfSegmentsFromClient.size() / numberOfServingsFromClient;
         averageNumberOfDataPacketsFromServer = sizesOfSegmentsFromServer.size() / numberOfServingsFromServer;
 
@@ -62,8 +62,8 @@ public class Stream {
     // Расчетные данные
 
     // Пакеты в потоке
-    private List<IPPacket> flowFromClient = new ArrayList<>();
-    private List<IPPacket> flowFromServer = new ArrayList<>();
+    private List<IP> flowFromClient = new ArrayList<>();
+    private List<IP> flowFromServer = new ArrayList<>();
 
     // Размеры сегментов со стороны клиента
     private List<Integer> sizesOfSegmentsFromClient = new ArrayList<>();
@@ -83,28 +83,28 @@ public class Stream {
     // Экспериментальные данные
 
     // Средний размер пакета со стороны клиента
-    private double averageSizeOfPacketFromClient;
+    private double averageSizeOnTransportLayerFromClient;
 
     // Стандартное отклонение размера пакета со стороны клиента
     private double standardDeviationOfPacketSizeFromClient;
 
     // Средний размер пакета со стороны сервера
-    private double averageSizeOfPacketFromServer;
+    private double averageSizeOnTransportLayerFromServer;
 
     // Стандартное отклонение размера пакета со стороны сервера
     private double standardDeviationOfPacketSizeFromServer;
 
     // Средний размер порции данных со стороны клиента
-    private double averageSizeOfDataFromClient;
+    private double averageSizeDataOnTransportLayerFromClient;
 
     // Стандартное отклонение размера порции данных со стороны клиента
-    private double standardDeviationOfDataSizeFromClient;
+    private double standardDeviationOfDataOnTransportLayerFromClien;
 
     // Средний размер данных со стороны сервера
-    private double averageSizeOfDataFromServer;
+    private double averageSizeDataOnTransportLayerFromServer;
 
     // Стандартное отклонение размера данных со стороны сервера
-    private double standardDeviationOfDataSizeFromServer;
+    private double standardDeviationOfDataOnTransportLayerFromServer;
 
     // Среднее число пакетов на порцию данных со стороны клиента
     private double averageNumberOfDataPacketsFromClient;
