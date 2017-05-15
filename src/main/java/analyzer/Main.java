@@ -43,7 +43,9 @@ public class Main {
                         "количество потоков - %d\n\n\n", count, nol, count-nol-g, g, GroupService.getResultSize());
         }
 
-        GroupService.soutFlows();
+
+
+
 
         }
 

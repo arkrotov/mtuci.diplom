@@ -1,5 +1,6 @@
 package ru.krotov.logics.network;
 
+import lombok.Data;
 import ru.krotov.models.IP;
 
 import java.util.ArrayList;
@@ -9,18 +10,19 @@ import java.util.List;
  * Created by Me on 09.04.2017.
  */
 
+@Data
 public class Stream {
-
 
     public Stream(List<IP> flow) {
 
-        double sizeOnTransportLayerFromClient = 0;
         double sizeOnTransportLayerFromServer = 0;
+        double sizeOnTransportLayerFromClient = 0;
         double sizeDataOnTransportLayerFromClient = 0;
         double sizeDataOnTransportLayerFromServer = 0;
         int toClient = 3;
         int numberOfServingsFromServer = 0;
         int numberOfServingsFromClient = 0;
+
 
         for (IP ipPacket : flow) {
 
@@ -31,8 +33,8 @@ public class Stream {
                 sizeDataOnTransportLayerFromClient += ipPacket.getTransportDataLength();
                 sizeOnTransportLayerFromClient += ipPacket.getTransportDataLength() + ipPacket.getTransportHeaderLength();
                 flowFromClient.add(ipPacket);
-                sizesOfSegmentsFromClient.add((int) packet.length);
-                sizesOfDataFromClient.add(packet.data.length);
+                sizesOfSegmentsFromClient.add(ipPacket.getTransportDataLength() + ipPacket.getTransportHeaderLength());
+                sizesOfDataFromClient.add(ipPacket.getTransportDataLength());
             } else {
 
                 if (toClient != 0) {numberOfServingsFromServer++; toClient = 0; }
@@ -40,10 +42,12 @@ public class Stream {
                 sizeDataOnTransportLayerFromServer += ipPacket.getTransportDataLength();
                 sizeOnTransportLayerFromServer += ipPacket.getTransportDataLength() + ipPacket.getTransportHeaderLength();
                 flowFromServer.add(ipPacket);
-                sizesOfSegmentsFromServer.add((int) packet.length);
-                sizesOfDataFromServer.add(packet.data.length);
+                sizesOfSegmentsFromServer.add(ipPacket.getTransportDataLength() + ipPacket.getTransportHeaderLength());
+                sizesOfDataFromServer.add(ipPacket.getTransportDataLength());
             }
-        }   //КПД клиента – количество переданной нагрузки прикладного уровня,
+        }
+
+        //КПД клиента – количество переданной нагрузки прикладного уровня,
         //делённое на общее количество переданной нагрузки прикладного и транспортного уровня
 
         averageSizeOnTransportLayerFromClient = sizeOnTransportLayerFromClient / flowFromClient.size();
@@ -76,8 +80,6 @@ public class Stream {
 
     // Размеры порций данных со стороны сервера
     private List<Integer> sizesOfDataFromServer = new ArrayList<>();
-
-
 
 
     // Экспериментальные данные
