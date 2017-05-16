@@ -13,55 +13,6 @@ import java.util.List;
 @Data
 public class Stream {
 
-    public Stream(List<IP> flow) {
-
-        double sizeOnTransportLayerFromServer = 0;
-        double sizeOnTransportLayerFromClient = 0;
-        double sizeDataOnTransportLayerFromClient = 0;
-        double sizeDataOnTransportLayerFromServer = 0;
-        int toClient = 3;
-        int numberOfServingsFromServer = 0;
-        int numberOfServingsFromClient = 0;
-
-
-        for (IP ipPacket : flow) {
-
-            if (ipPacket.isToMe()) {
-
-                if (toClient != 1) { numberOfServingsFromClient++; toClient = 1; }
-
-                sizeDataOnTransportLayerFromClient += ipPacket.getTransportDataLength();
-                sizeOnTransportLayerFromClient += ipPacket.getTransportDataLength() + ipPacket.getTransportHeaderLength();
-                flowFromClient.add(ipPacket);
-                sizesOfSegmentsFromClient.add(ipPacket.getTransportDataLength() + ipPacket.getTransportHeaderLength());
-                sizesOfDataFromClient.add(ipPacket.getTransportDataLength());
-            } else {
-
-                if (toClient != 0) {numberOfServingsFromServer++; toClient = 0; }
-
-                sizeDataOnTransportLayerFromServer += ipPacket.getTransportDataLength();
-                sizeOnTransportLayerFromServer += ipPacket.getTransportDataLength() + ipPacket.getTransportHeaderLength();
-                flowFromServer.add(ipPacket);
-                sizesOfSegmentsFromServer.add(ipPacket.getTransportDataLength() + ipPacket.getTransportHeaderLength());
-                sizesOfDataFromServer.add(ipPacket.getTransportDataLength());
-            }
-        }
-
-        //КПД клиента – количество переданной нагрузки прикладного уровня,
-        //делённое на общее количество переданной нагрузки прикладного и транспортного уровня
-
-        averageSizeOnTransportLayerFromClient = sizeOnTransportLayerFromClient / flowFromClient.size();
-        averageSizeOnTransportLayerFromServer = sizeOnTransportLayerFromServer / flowFromServer.size();
-        averageSizeDataOnTransportLayerFromClient = sizeDataOnTransportLayerFromClient / flowFromClient.size();
-        averageSizeDataOnTransportLayerFromServer = sizeDataOnTransportLayerFromServer / flowFromServer.size();
-        standardDeviationOfPacketSizeFromClient = standardDeviation(sizesOfSegmentsFromClient);
-        standardDeviationOfPacketSizeFromServer = standardDeviation(sizesOfSegmentsFromServer);
-        standardDeviationOfDataOnTransportLayerFromClien = standardDeviation(sizesOfDataFromClient);
-        standardDeviationOfDataOnTransportLayerFromServer = standardDeviation(sizesOfDataFromServer);
-        averageNumberOfDataPacketsFromClient = sizesOfSegmentsFromClient.size() / numberOfServingsFromClient;
-        averageNumberOfDataPacketsFromServer = sizesOfSegmentsFromServer.size() / numberOfServingsFromServer;
-
-    }
 
     // Расчетные данные
 
@@ -80,6 +31,7 @@ public class Stream {
 
     // Размеры порций данных со стороны сервера
     private List<Integer> sizesOfDataFromServer = new ArrayList<>();
+
 
 
     // Экспериментальные данные
@@ -114,10 +66,6 @@ public class Stream {
     //Среднее число пакетов на порцию данных со стороны сервера
     private double averageNumberOfDataPacketsFromServer;
 
-
-
-    // Остальные метрики
-
     //КПД клиента – количество переданной нагрузки прикладного уровня,
     //делённое на общее количество переданной нагрузки прикладного и транспортного уровня
     private double efficiencyOfClient;
@@ -135,15 +83,80 @@ public class Stream {
     private double ratioOfNumberOfPackets;
 
     //Общее количество переданных байт со стороны клиента
-    private double totalBytesFromClient;
+    private double sizeOnTransportLayerFromClient;
 
     //Общее количество переданной нагрузки прикладного уровня со стороны клиента
-    private double totalBytesOfDataFromClient;
+    private double sizeDataOnTransportLayerFromClient;
 
     //Общее количество переданных сегментов транспортного уровня со стороны клиента
-    private double totalNubmerFromClient;
+    private int numberOfServingsFromClient;
 
-    public static double standardDeviation (List <? extends Number> entry) {
+    //Общее количество переданных байт со стороны сервера
+    private double sizeOnTransportLayerFromServer;
+
+    //Общее количество переданной нагрузки прикладного уровня со стороны сервера
+    private double sizeDataOnTransportLayerFromServer;
+
+    //Общее количество переданных сегментов транспортного уровня со стороны сервера
+    private int numberOfServingsFromServer;
+
+
+    public Stream(List<IP> flow) {
+
+        sizeOnTransportLayerFromServer = 0;
+        sizeOnTransportLayerFromClient = 0;
+        sizeDataOnTransportLayerFromClient = 0;
+        sizeDataOnTransportLayerFromServer = 0;
+        numberOfServingsFromServer = 0;
+        numberOfServingsFromClient = 0;
+        int toClient = 3;
+
+        for (IP ipPacket : flow) {
+
+            if (ipPacket.isToMe()) {
+
+                if (toClient != 1) { numberOfServingsFromClient++; toClient = 1; }
+
+                sizeDataOnTransportLayerFromClient += ipPacket.getTransportDataLength();
+                sizeOnTransportLayerFromClient += ipPacket.getTransportDataLength() + ipPacket.getTransportHeaderLength();
+                flowFromClient.add(ipPacket);
+                sizesOfSegmentsFromClient.add(ipPacket.getTransportDataLength() + ipPacket.getTransportHeaderLength());
+                sizesOfDataFromClient.add(ipPacket.getTransportDataLength());
+
+            } else {
+
+                if (toClient != 0) {numberOfServingsFromServer++; toClient = 0; }
+
+                sizeDataOnTransportLayerFromServer += ipPacket.getTransportDataLength();
+                sizeOnTransportLayerFromServer += ipPacket.getTransportDataLength() + ipPacket.getTransportHeaderLength();
+                flowFromServer.add(ipPacket);
+                sizesOfSegmentsFromServer.add(ipPacket.getTransportDataLength() + ipPacket.getTransportHeaderLength());
+                sizesOfDataFromServer.add(ipPacket.getTransportDataLength());
+            }
+        }
+
+        //КПД клиента – количество переданной нагрузки прикладного уровня,
+        //делённое на общее количество переданной нагрузки прикладного и транспортного уровня
+
+        averageSizeOnTransportLayerFromClient = sizeOnTransportLayerFromClient / flowFromClient.size();
+        averageSizeOnTransportLayerFromServer = sizeOnTransportLayerFromServer / flowFromServer.size();
+        averageSizeDataOnTransportLayerFromClient = sizeDataOnTransportLayerFromClient / flowFromClient.size();
+        averageSizeDataOnTransportLayerFromServer = sizeDataOnTransportLayerFromServer / flowFromServer.size();
+        standardDeviationOfPacketSizeFromClient = standardDeviation(sizesOfSegmentsFromClient);
+        standardDeviationOfPacketSizeFromServer = standardDeviation(sizesOfSegmentsFromServer);
+        standardDeviationOfDataOnTransportLayerFromClien = standardDeviation(sizesOfDataFromClient);
+        standardDeviationOfDataOnTransportLayerFromServer = standardDeviation(sizesOfDataFromServer);
+        averageNumberOfDataPacketsFromClient = sizesOfSegmentsFromClient.size() / numberOfServingsFromClient;
+        averageNumberOfDataPacketsFromServer = sizesOfSegmentsFromServer.size() / numberOfServingsFromServer;
+        efficiencyOfClient = sizeDataOnTransportLayerFromClient / sizeOnTransportLayerFromClient;
+        efficiencyOfServer = sizeDataOnTransportLayerFromServer / sizeOnTransportLayerFromServer;
+        ratio = sizeOnTransportLayerFromClient / sizeOnTransportLayerFromServer;
+        ratioOfData = sizeDataOnTransportLayerFromClient / sizeDataOnTransportLayerFromServer;
+        ratioOfNumberOfPackets = numberOfServingsFromClient / numberOfServingsFromServer;
+
+    }
+
+    private static double standardDeviation(List<? extends Number> entry) {
 
         double sr = 0;
 

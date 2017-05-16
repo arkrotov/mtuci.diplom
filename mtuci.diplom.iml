@@ -73,5 +73,7 @@
     <orderEntry type="library" name="Maven: org.sonatype.sisu:sisu-guice:2.1.7" level="project" />
     <orderEntry type="library" name="Maven: javax.inject:javax.inject:1" level="project" />
     <orderEntry type="library" name="Maven: aopalliance:aopalliance:1.0" level="project" />
+    <orderEntry type="library" name="jpcap" level="project" />
+    <orderEntry type="library" name="weka" level="project" />
   </component>
 </module>
