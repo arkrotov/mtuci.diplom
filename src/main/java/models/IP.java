@@ -1,4 +1,4 @@
-package ru.krotov.models;
+package models;
 
 import jpcap.packet.IPPacket;
 import lombok.Data;
@@ -17,7 +17,6 @@ public abstract class IP {
 
     private IPPacket ipPacket;
     private Timestamp timestamp;
-
 
     public abstract int getTransportDataLength ();
     public abstract int getTransportHeaderLength ();

@@ -1,4 +1,4 @@
-package ru.krotov.controllers;
+package controllers;
 
 public class StreamController {
 }

@@ -1,4 +1,4 @@
-package ru.krotov.logics.network;
+package network;
 
 import jpcap.JpcapCaptor;
 import jpcap.NetworkInterface;
@@ -12,17 +12,21 @@ public class Captor {
 
     private static JpcapCaptor instance;
 
-    public static JpcapCaptor getInstance()  {
+
+    public static JpcapCaptor getInstance() throws InterruptedException {
 
         if (instance == null) {
 
-            int index = 0;
             NetworkInterface[] devices = JpcapCaptor.getDeviceList();
+
+            int index = 0;
+
             try {
                 instance = JpcapCaptor.openDevice(devices[index], 65535, false, 20);
             } catch (IOException e) {
-                System.exit(400);
+                e.printStackTrace();
             }
+
         }
 
         return instance;

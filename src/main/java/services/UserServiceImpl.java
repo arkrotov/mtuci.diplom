@@ -1,10 +1,10 @@
-package ru.krotov.services;
+package services;
 
 import com.google.common.collect.Lists;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
-import ru.krotov.models.User;
-import ru.krotov.repositories.UserRepository;
+import models.User;
+import repositories.UserRepository;
 
 import javax.annotation.PostConstruct;
 import java.util.List;

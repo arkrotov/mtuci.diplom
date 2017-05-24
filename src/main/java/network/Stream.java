@@ -1,7 +1,7 @@
-package ru.krotov.logics.network;
+package network;
 
 import lombok.Data;
-import ru.krotov.models.IP;
+import models.IP;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -31,9 +31,7 @@ public class Stream {
 
     // Размеры порций данных со стороны сервера
     private List<Integer> sizesOfDataFromServer = new ArrayList<>();
-
-
-
+    
     // Экспериментальные данные
 
     // Средний размер пакета со стороны клиента
@@ -52,7 +50,7 @@ public class Stream {
     private double averageSizeDataOnTransportLayerFromClient;
 
     // Стандартное отклонение размера порции данных со стороны клиента
-    private double standardDeviationOfDataOnTransportLayerFromClien;
+    private double standardDeviationOfDataOnTransportLayerFromClient;
 
     // Средний размер данных со стороны сервера
     private double averageSizeDataOnTransportLayerFromServer;
@@ -144,7 +142,7 @@ public class Stream {
         averageSizeDataOnTransportLayerFromServer = sizeDataOnTransportLayerFromServer / flowFromServer.size();
         standardDeviationOfPacketSizeFromClient = standardDeviation(sizesOfSegmentsFromClient);
         standardDeviationOfPacketSizeFromServer = standardDeviation(sizesOfSegmentsFromServer);
-        standardDeviationOfDataOnTransportLayerFromClien = standardDeviation(sizesOfDataFromClient);
+        standardDeviationOfDataOnTransportLayerFromClient = standardDeviation(sizesOfDataFromClient);
         standardDeviationOfDataOnTransportLayerFromServer = standardDeviation(sizesOfDataFromServer);
         averageNumberOfDataPacketsFromClient = sizesOfSegmentsFromClient.size() / numberOfServingsFromClient;
         averageNumberOfDataPacketsFromServer = sizesOfSegmentsFromServer.size() / numberOfServingsFromServer;
@@ -174,4 +172,5 @@ public class Stream {
 
         return Math.sqrt(o / (entry.size() - 1));
     }
+
 }

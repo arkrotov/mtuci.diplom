@@ -1,7 +1,9 @@
-package ru.krotov.services;
+package services;
 
 import jpcap.packet.TCPPacket;
 import jpcap.packet.UDPPacket;
+import models.IP;
+
 
 import java.io.File;
 import java.io.FileNotFoundException;
@@ -37,14 +39,15 @@ public class GroupService {
 
                 if (belongToFlow(packet, currentPacket)) {
 
-                    if (currentPacket.getPacket() instanceof TCPPacket) {
-                        if (((TCPPacket) currentPacket.getPacket()).fin) {
+
+                    if (currentPacket.getIpPacket() instanceof TCPPacket) {
+                        if (((TCPPacket) currentPacket.getIpPacket()).fin) {
                             flow.add(currentPacket);
                             resultGroupFlow.add(flow);
                             groupFlow.remove(flow);
                             return;
                         }
-                    } else if (currentPacket.getPacket() instanceof UDPPacket) {
+                    } else if (currentPacket.getIpPacket() instanceof UDPPacket) {
                         if (currentPacket.getTimestamp().getMinutes() - flow.get(0).getTimestamp().getMinutes() >= 5) {
                             flow.add(currentPacket); // TODO: Сощдавать новый поток?!
                             resultGroupFlow.add(flow);
@@ -70,26 +73,26 @@ public class GroupService {
     // Проверка на принадлежность к существующим потокам
     static private boolean belongToFlow(IP o1, IP o2) {
 
-        if (o1.getPacket().protocol != o2.getPacket().protocol)
+        if (o1.getIpPacket().protocol != o2.getIpPacket().protocol)
             return false;
 
-        if (!((o1.getPacket().dst_ip.equals(o2.getPacket().dst_ip) && o1.getPacket().src_ip.equals(o2.getPacket().src_ip))
-                || (o1.getPacket().dst_ip.equals(o2.getPacket().src_ip) && o1.getPacket().src_ip.equals(o2.getPacket().dst_ip))))
+        if (!((o1.getIpPacket().dst_ip.equals(o2.getIpPacket().dst_ip) && o1.getIpPacket().src_ip.equals(o2.getIpPacket().src_ip))
+                || (o1.getIpPacket().dst_ip.equals(o2.getIpPacket().src_ip) && o1.getIpPacket().src_ip.equals(o2.getIpPacket().dst_ip))))
             return false;
 
-        if (o1.getPacket() instanceof UDPPacket && o2.getPacket() instanceof  UDPPacket) {
+        if (o1.getIpPacket() instanceof UDPPacket && o2.getIpPacket() instanceof  UDPPacket) {
 
-            UDPPacket o1UDP = (UDPPacket) o1.getPacket();
-            UDPPacket o2UDP = (UDPPacket) o2.getPacket();
+            UDPPacket o1UDP = (UDPPacket) o1.getIpPacket();
+            UDPPacket o2UDP = (UDPPacket) o2.getIpPacket();
 
             return (o1UDP.dst_port == o2UDP.dst_port && o1UDP.src_port == o2UDP.src_port)
                     || (o1UDP.dst_port == o2UDP.src_port && o1UDP.src_port == o2UDP.dst_port);
         }
 
-        if (o1.getPacket() instanceof TCPPacket && o2.getPacket() instanceof TCPPacket) {
+        if (o1.getIpPacket() instanceof TCPPacket && o2.getIpPacket() instanceof TCPPacket) {
 
-            TCPPacket o1TCP = (TCPPacket) o1.getPacket();
-            TCPPacket o2TCP = (TCPPacket) o2.getPacket();
+            TCPPacket o1TCP = (TCPPacket) o1.getIpPacket();
+            TCPPacket o2TCP = (TCPPacket) o2.getIpPacket();
 
             return (o1TCP.dst_port == o2TCP.dst_port && o1TCP.src_port == o2TCP.src_port)
                     || (o1TCP.dst_port == o2TCP.src_port && o1TCP.src_port == o2TCP.dst_port);
@@ -124,12 +127,12 @@ public class GroupService {
                 if (j == 0)
                     time = obj.getTimestamp();
 
-                System.out.println(obj.getPacket());
+                System.out.println(obj.getIpPacket());
 
                 if (j == flow.size() - 1) {
                     System.out.println("Разница " +
                             (obj.getTimestamp().getMinutes() - time.getMinutes()) + "минут");
-                    if (obj.getPacket() instanceof TCPPacket) System.out.println(((TCPPacket) obj.getPacket()).fin);
+                    if (obj.getIpPacket() instanceof TCPPacket) System.out.println(((TCPPacket) obj.getIpPacket()).fin);
                 }
             }
 

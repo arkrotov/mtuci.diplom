@@ -1,4 +1,4 @@
-package ru.krotov.repositories;
+package repositories;
 
 public interface UDPRepository {
 }

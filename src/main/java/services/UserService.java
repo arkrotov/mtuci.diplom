@@ -1,6 +1,6 @@
-package ru.krotov.services;
+package services;
 
-import ru.krotov.models.User;
+import models.User;
 
 import java.util.List;
 

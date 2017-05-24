@@ -1,4 +1,4 @@
-package ru.krotov.models;
+package models;
 
 import javax.persistence.*;
 
