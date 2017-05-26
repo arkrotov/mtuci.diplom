@@ -1,8 +1,12 @@
 package services;
 
+import jpcap.packet.IPPacket;
 import jpcap.packet.TCPPacket;
 import jpcap.packet.UDPPacket;
+import lombok.Data;
 import models.IP;
+import models.TCP;
+import models.UDP;
 
 
 import java.io.File;
@@ -22,13 +26,16 @@ public class GroupService {
     static private List<List<IP>> groupFlow = new ArrayList<>();
     static private List<List<IP>> resultGroupFlow = new ArrayList<>();
 
+    public static List<List<IP>> getResultGroupFlow() {
+        return resultGroupFlow;
+    }
 
     public static int getResultSize () {
         return resultGroupFlow.size();
     }
 
     // Формирование потока
-    public static void formFlow(IP currentPacket) {
+    public static void formFlow(IPPacket currentPacket) {
 
 
         for (int i = 0; i < groupFlow.size(); i++) {
@@ -37,26 +44,27 @@ public class GroupService {
                 List<IP> flow = groupFlow.get(i);
                 IP packet = flow.get(j);
 
-                if (belongToFlow(packet, currentPacket)) {
+                if (belongToFlow(packet, new IP(currentPacket))) {
 
 
-                    if (currentPacket.getIpPacket() instanceof TCPPacket) {
-                        if (((TCPPacket) currentPacket.getIpPacket()).fin) {
-                            flow.add(currentPacket);
+                    if (currentPacket instanceof TCPPacket) {
+                        if (((TCPPacket) currentPacket).fin) {
+                            flow.add(new TCP(currentPacket));
                             resultGroupFlow.add(flow);
                             groupFlow.remove(flow);
                             return;
                         }
-                    } else if (currentPacket.getIpPacket() instanceof UDPPacket) {
+                     /* else if (currentPacket instanceof UDPPacket) {
                         if (currentPacket.getTimestamp().getMinutes() - flow.get(0).getTimestamp().getMinutes() >= 5) {
-                            flow.add(currentPacket); // TODO: Сощдавать новый поток?!
+                            flow.add((UDP) currentPacket); // TODO: Сощдавать новый поток?!
                             resultGroupFlow.add(flow);
                             groupFlow.remove(flow);
                             return;
-                        }
-                    }
+                        }*/
 
-                    flow.add(currentPacket);
+
+                        flow.add(new TCP(currentPacket));
+                    }
                     return;
                 }
 
@@ -65,7 +73,7 @@ public class GroupService {
 
 
         List<IP> flow = new ArrayList<>();
-        flow.add(currentPacket);
+        flow.add(new TCP(currentPacket));
         groupFlow.add(flow);
 
     }

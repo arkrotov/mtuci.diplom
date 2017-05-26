@@ -8,7 +8,7 @@ import java.time.Instant;
 import java.util.regex.Pattern;
 
 @Data
-public abstract class IP {
+public class IP {
 
     public IP(IPPacket ipPacket) {
         this.ipPacket = ipPacket;
@@ -18,8 +18,13 @@ public abstract class IP {
     private IPPacket ipPacket;
     private Timestamp timestamp;
 
-    public abstract int getTransportDataLength ();
-    public abstract int getTransportHeaderLength ();
+    //TODO: Уйти от костыля  throw new Exception("Нельзя вызывать метод у класса IP");
+    public int getTransportDataLength () throws Exception {
+        throw new Exception("Нельзя вызывать метод у класса IP");
+    }
+    public int getTransportHeaderLength () throws Exception {
+        throw new Exception("Нельзя вызывать метод у класса IP");
+    }
 
     public boolean isToMe () {
 

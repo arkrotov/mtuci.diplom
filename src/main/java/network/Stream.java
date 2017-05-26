@@ -3,8 +3,10 @@ package network;
 import lombok.Data;
 import models.IP;
 
+import java.lang.reflect.Field;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Random;
 
 /**
  * Created by Me on 09.04.2017.
@@ -31,7 +33,7 @@ public class Stream {
 
     // Размеры порций данных со стороны сервера
     private List<Integer> sizesOfDataFromServer = new ArrayList<>();
-    
+
     // Экспериментальные данные
 
     // Средний размер пакета со стороны клиента
@@ -98,8 +100,11 @@ public class Stream {
     //Общее количество переданных сегментов транспортного уровня со стороны сервера
     private int numberOfServingsFromServer;
 
+    private String testApp;
 
-    public Stream(List<IP> flow) {
+    public Stream(List<IP> flow) throws Exception {
+
+        testApp = TestApp.getMas()[new Random().nextInt(TestApp.getMas().length)];
 
         sizeOnTransportLayerFromServer = 0;
         sizeOnTransportLayerFromClient = 0;
@@ -113,7 +118,10 @@ public class Stream {
 
             if (ipPacket.isToMe()) {
 
-                if (toClient != 1) { numberOfServingsFromClient++; toClient = 1; }
+                if (toClient != 1) {
+                    numberOfServingsFromClient++;
+                    toClient = 1;
+                }
 
                 sizeDataOnTransportLayerFromClient += ipPacket.getTransportDataLength();
                 sizeOnTransportLayerFromClient += ipPacket.getTransportDataLength() + ipPacket.getTransportHeaderLength();
@@ -123,7 +131,10 @@ public class Stream {
 
             } else {
 
-                if (toClient != 0) {numberOfServingsFromServer++; toClient = 0; }
+                if (toClient != 0) {
+                    numberOfServingsFromServer++;
+                    toClient = 0;
+                }
 
                 sizeDataOnTransportLayerFromServer += ipPacket.getTransportDataLength();
                 sizeOnTransportLayerFromServer += ipPacket.getTransportDataLength() + ipPacket.getTransportHeaderLength();
@@ -136,21 +147,21 @@ public class Stream {
         //КПД клиента – количество переданной нагрузки прикладного уровня,
         //делённое на общее количество переданной нагрузки прикладного и транспортного уровня
 
-        averageSizeOnTransportLayerFromClient = sizeOnTransportLayerFromClient / flowFromClient.size();
-        averageSizeOnTransportLayerFromServer = sizeOnTransportLayerFromServer / flowFromServer.size();
-        averageSizeDataOnTransportLayerFromClient = sizeDataOnTransportLayerFromClient / flowFromClient.size();
-        averageSizeDataOnTransportLayerFromServer = sizeDataOnTransportLayerFromServer / flowFromServer.size();
+        averageSizeOnTransportLayerFromClient = sizeOnTransportLayerFromClient / (flowFromClient.size() == 0 ? 1 : flowFromClient.size());
+        averageSizeOnTransportLayerFromServer = sizeOnTransportLayerFromServer / (flowFromServer.size() == 0 ? 1 : flowFromServer.size());
+        averageSizeDataOnTransportLayerFromClient = sizeDataOnTransportLayerFromClient / (flowFromClient.size() == 0 ? 1 : flowFromClient.size());
+        averageSizeDataOnTransportLayerFromServer = sizeDataOnTransportLayerFromServer / (flowFromServer.size() == 0 ? 1 : flowFromServer.size());
         standardDeviationOfPacketSizeFromClient = standardDeviation(sizesOfSegmentsFromClient);
         standardDeviationOfPacketSizeFromServer = standardDeviation(sizesOfSegmentsFromServer);
         standardDeviationOfDataOnTransportLayerFromClient = standardDeviation(sizesOfDataFromClient);
         standardDeviationOfDataOnTransportLayerFromServer = standardDeviation(sizesOfDataFromServer);
-        averageNumberOfDataPacketsFromClient = sizesOfSegmentsFromClient.size() / numberOfServingsFromClient;
-        averageNumberOfDataPacketsFromServer = sizesOfSegmentsFromServer.size() / numberOfServingsFromServer;
-        efficiencyOfClient = sizeDataOnTransportLayerFromClient / sizeOnTransportLayerFromClient;
-        efficiencyOfServer = sizeDataOnTransportLayerFromServer / sizeOnTransportLayerFromServer;
-        ratio = sizeOnTransportLayerFromClient / sizeOnTransportLayerFromServer;
-        ratioOfData = sizeDataOnTransportLayerFromClient / sizeDataOnTransportLayerFromServer;
-        ratioOfNumberOfPackets = numberOfServingsFromClient / numberOfServingsFromServer;
+        averageNumberOfDataPacketsFromClient = sizesOfSegmentsFromClient.size() / (numberOfServingsFromClient == 0 ? 1 : numberOfServingsFromClient);
+        averageNumberOfDataPacketsFromServer = sizesOfSegmentsFromServer.size() / (numberOfServingsFromServer == 0 ? 1 : numberOfServingsFromServer);
+        efficiencyOfClient = sizeDataOnTransportLayerFromClient / (sizeOnTransportLayerFromClient == 0 ? 1 : sizeOnTransportLayerFromClient);
+        efficiencyOfServer = sizeDataOnTransportLayerFromServer / (sizeOnTransportLayerFromServer == 0 ? 1 : sizeOnTransportLayerFromServer);
+        ratio = sizeOnTransportLayerFromClient / (sizeOnTransportLayerFromServer == 0 ? 1 : sizeOnTransportLayerFromServer);
+        ratioOfData = sizeDataOnTransportLayerFromClient / (sizeDataOnTransportLayerFromServer == 0 ? 1 : sizeDataOnTransportLayerFromServer);
+        ratioOfNumberOfPackets = numberOfServingsFromClient / (numberOfServingsFromServer == 0? 1 : numberOfServingsFromServer);
 
     }
 
@@ -159,7 +170,7 @@ public class Stream {
         double sr = 0;
 
         for (Number number : entry) {
-            sr += (double) number;
+            sr += Double.parseDouble(String.valueOf(number));
         }
 
         sr /= entry.size();
@@ -167,10 +178,90 @@ public class Stream {
         double o = 0;
 
         for (Number number : entry) {
-            o += Math.pow(((double) number - sr), 2);
+            o += Math.pow((Double.parseDouble(String.valueOf(number)) - sr), 2);
         }
 
-        return Math.sqrt(o / (entry.size() - 1));
+        double result = Math.sqrt(o / (entry.size() - 1));
+        return String.valueOf(result).equals("-0.0") ? 0 : result;
     }
 
+    @Override
+    public String toString() {
+        return "Stream{" +
+                "\nflowFromClient=" + flowFromClient +
+                "\n  flowFromServer=" + flowFromServer +
+                "\n  sizesOfSegmentsFromClient=" + sizesOfSegmentsFromClient +
+                "\n sizesOfSegmentsFromServer=" + sizesOfSegmentsFromServer +
+                "\n sizesOfDataFromClient=" + sizesOfDataFromClient +
+                "\n sizesOfDataFromServer=" + sizesOfDataFromServer +
+                "\n averageSizeOnTransportLayerFromClient=" + averageSizeOnTransportLayerFromClient +
+                "\n standardDeviationOfPacketSizeFromClient=" + standardDeviationOfPacketSizeFromClient +
+                "\n averageSizeOnTransportLayerFromServer=" + averageSizeOnTransportLayerFromServer +
+                "\n standardDeviationOfPacketSizeFromServer=" + standardDeviationOfPacketSizeFromServer +
+                "\n averageSizeDataOnTransportLayerFromClient=" + averageSizeDataOnTransportLayerFromClient +
+                "\n standardDeviationOfDataOnTransportLayerFromClient=" + standardDeviationOfDataOnTransportLayerFromClient +
+                "\n averageSizeDataOnTransportLayerFromServer=" + averageSizeDataOnTransportLayerFromServer +
+                "\n standardDeviationOfDataOnTransportLayerFromServer=" + standardDeviationOfDataOnTransportLayerFromServer +
+                "\n averageNumberOfDataPacketsFromClient=" + averageNumberOfDataPacketsFromClient +
+                "\n averageNumberOfDataPacketsFromServer=" + averageNumberOfDataPacketsFromServer +
+                "\n efficiencyOfClient=" + efficiencyOfClient +
+                "\n efficiencyOfServer=" + efficiencyOfServer +
+                "\n ratio=" + ratio +
+                "\n ratioOfData=" + ratioOfData +
+                "\n ratioOfNumberOfPackets=" + ratioOfNumberOfPackets +
+                "\n sizeOnTransportLayerFromClient=" + sizeOnTransportLayerFromClient +
+                "\n sizeDataOnTransportLayerFromClient=" + sizeDataOnTransportLayerFromClient +
+                "\n numberOfServingsFromClient=" + numberOfServingsFromClient +
+                "\n sizeOnTransportLayerFromServer=" + sizeOnTransportLayerFromServer +
+                "\n sizeDataOnTransportLayerFromServer=" + sizeDataOnTransportLayerFromServer +
+                "\n numberOfServingsFromServer=" + numberOfServingsFromServer +
+                "\n testApp='" + testApp + '\'' +
+                "}\n\n";
+    }
+
+    public String toFile() {
+        return averageSizeOnTransportLayerFromClient +
+                "," + standardDeviationOfPacketSizeFromClient +
+                "," + averageSizeOnTransportLayerFromServer +
+                "," + standardDeviationOfPacketSizeFromServer +
+                "," + averageSizeDataOnTransportLayerFromClient +
+                "," + standardDeviationOfDataOnTransportLayerFromClient +
+                "," + averageSizeDataOnTransportLayerFromServer +
+                "," + standardDeviationOfDataOnTransportLayerFromServer +
+                "," + averageNumberOfDataPacketsFromClient +
+                "," + averageNumberOfDataPacketsFromServer +
+                "," + efficiencyOfClient +
+                "," + efficiencyOfServer +
+                "," + ratio +
+                "," + ratioOfData +
+                "," + ratioOfNumberOfPackets +
+                "," + sizeOnTransportLayerFromClient +
+                "," + sizeDataOnTransportLayerFromClient +
+                "," + numberOfServingsFromClient +
+                "," + sizeOnTransportLayerFromServer +
+                "," + sizeDataOnTransportLayerFromServer +
+                "," + numberOfServingsFromServer +
+                "," + testApp;
+    }
+
+    public static String[] getNameFields() {
+
+        Field[] fields = Stream.class.getDeclaredFields();
+
+        String[] nameFields = new String[fields.length - 6];
+
+        for (int i = 6; i < fields.length; i++) {
+            nameFields[i - 6] = fields[i].getName();
+        }
+
+        return nameFields;
+    }
+
+    public static void main(String[] args) {
+        int i = 0;
+        for (String s : getNameFields()) {
+            System.out.println(i++ + " " + s);
+        }
+
+    }
 }
