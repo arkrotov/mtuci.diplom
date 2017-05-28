@@ -1,14 +1,11 @@
-import classifiers.Test;
-import classifiers.TestFile;
+import services.FileService;
 import jpcap.JpcapCaptor;
-import jpcap.packet.IPPacket;
 import jpcap.packet.Packet;
 import jpcap.packet.TCPPacket;
-import models.IP;
-import network.Captor;
+import network.IP;
+import services.CaptorService;
 import network.Stream;
-import network.TestApp;
-import org.springframework.boot.SpringApplication;
+import mocks.MockApp;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 import services.GroupService;
 
@@ -17,33 +14,27 @@ import java.util.ArrayList;
 import java.util.List;
 
 @SpringBootApplication
-public class MainClassT {
+public class Main {
 
 
     private static boolean enable = true;
 
     public static void main(String[] args) throws Exception {
+
         // SpringApplication.run(Main.class, args);
 
-        new Thread(new Runnable() {
-            @Override
-            public void run() {
-                String s = "";
+        new Thread(() -> {
+            try {
                 BufferedReader reader = new BufferedReader(new InputStreamReader(System.in));
-                try {
-                    s = reader.readLine();
-                } catch (IOException e) {
-                    e.printStackTrace();
-                }
-            //    if (s.equals("stop")) {
-                    enable = false;
-            //    }
+                reader.readLine();
+                enable = false;
+            } catch (IOException e) {
+                e.printStackTrace();
             }
         }).start();
 
 
-
-        JpcapCaptor instance = Captor.getInstance();
+        JpcapCaptor instance = CaptorService.getInstance();
 
         System.out.println("Старт");
         for (int i = 0; i < 1000000; i++) {
@@ -64,13 +55,11 @@ public class MainClassT {
             GroupService.formFlow((TCPPacket) packet);
         }
 
-        System.out.println("---------------------------------------------");
         System.out.printf("Итоговое количество потоков - %d\n", GroupService.getResultSize());
 
         List<List<IP>> resultGroupFlow = GroupService.getResultGroupFlow();
 
         List<Stream> streamList = new ArrayList<>();
-
 
         FileWriter fileWriter = new FileWriter(new File("StreamInfo"));
         for (List<IP> ipList : resultGroupFlow) {
@@ -80,14 +69,8 @@ public class MainClassT {
             fileWriter.flush();
         }
 
-
-        TestFile testFile = new TestFile("streams",
-                Stream.getNameFields(), TestApp.getMasToString(), streamList);
-
-        testFile.write();
-
-        // Test test = new Test(streamList);
-
+        FileService.write("streams",
+                Stream.getNameFields(), MockApp.getMasToString(), streamList);
 
     }
 }

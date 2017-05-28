@@ -1,4 +1,4 @@
-package classifiers;
+package services;
 
 import network.Stream;
 
@@ -7,24 +7,10 @@ import java.io.FileWriter;
 import java.io.IOException;
 import java.util.List;
 
-/**
- * Created by me on 24.05.17.
- */
-public class TestFile {
 
-    private String relation = "applications";
-    private Object[] attributions;
-    private String classes;
-    private List<Stream> masOfdata;
+public class FileService {
 
-    public TestFile(String relation, Object[] attributions, String classes, List<Stream> masOfdata) {
-        this.relation = relation;
-        this.attributions = attributions;
-        this.classes = classes;
-        this.masOfdata = masOfdata;
-    }
-
-    public void write() throws IOException {
+    public static void write(String relation, Object[] attributions, String classes, List<Stream> masOfData) throws IOException {
 
         File file = new File("TestStreams.txt");
 
@@ -33,9 +19,12 @@ public class TestFile {
         System.out.println(file.canWrite());
 
         StringBuilder stringBuilder = new StringBuilder();
-         stringBuilder.append("@relation ").append(relation).append("\n\n");
+        stringBuilder.append("@relation ").append(relation).append("\n\n");
 
-        for (int i = 0; i < attributions.length - 1; i++) {
+        for (int i = 0; i < 2; i++) {
+            stringBuilder.append("@attribute ").append(attributions[i]).append(" string\n");
+        }
+        for (int i = 2; i < attributions.length - 1; i++) {
             stringBuilder.append("@attribute ").append(attributions[i]).append(" numeric\n");
         }
 
@@ -50,7 +39,7 @@ public class TestFile {
         fileWriter.write(stringBuilder.toString());
         fileWriter.flush();
 
-        for (Stream data : masOfdata) {
+        for (Stream data : masOfData) {
             fileWriter.write(data.toFile());
             fileWriter.write("\n");
             fileWriter.flush();

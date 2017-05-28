@@ -3,10 +3,8 @@ package services;
 import jpcap.packet.IPPacket;
 import jpcap.packet.TCPPacket;
 import jpcap.packet.UDPPacket;
-import lombok.Data;
-import models.IP;
-import models.TCP;
-import models.UDP;
+import network.IP;
+import network.TCP;
 
 
 import java.io.File;
@@ -15,10 +13,6 @@ import java.io.PrintStream;
 import java.sql.Timestamp;
 import java.util.ArrayList;
 import java.util.List;
-
-/**
- * Created by Me on 09.04.2017.
- */
 
 public class GroupService {
 
@@ -56,7 +50,7 @@ public class GroupService {
                         }
                      /* else if (currentPacket instanceof UDPPacket) {
                         if (currentPacket.getTimestamp().getMinutes() - flow.get(0).getTimestamp().getMinutes() >= 5) {
-                            flow.add((UDP) currentPacket); // TODO: Сощдавать новый поток?!
+                            flow.add((UDP) currentPacket); // TODO: Создавать новый поток?!
                             resultGroupFlow.add(flow);
                             groupFlow.remove(flow);
                             return;
@@ -113,7 +107,7 @@ public class GroupService {
     // Вывод потоков на экран
     public static void soutFlows() {
 
-        File file = new File("src/main/java/packets/test.txt");
+        File file = new File("src/main/java/packets/MockApp.txt");
         try {
             PrintStream stream = new PrintStream(file);
             System.setOut(stream);

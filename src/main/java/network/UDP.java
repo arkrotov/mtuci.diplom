@@ -1,4 +1,4 @@
-package models;
+package network;
 
 import jpcap.packet.IPPacket;
 import jpcap.packet.UDPPacket;

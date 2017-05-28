@@ -1,17 +1,13 @@
-package network;
+package services;
 
 import jpcap.JpcapCaptor;
 import jpcap.NetworkInterface;
 
 import java.io.IOException;
 
-/**
- * Created by Me on 09.04.2017.
- */
-public class Captor {
+public class CaptorService {
 
     private static JpcapCaptor instance;
-
 
     public static JpcapCaptor getInstance() throws InterruptedException {
 

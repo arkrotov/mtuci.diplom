@@ -1,27 +1,11 @@
-package network;
+package mocks;
 
-import classifiers.Test;
-import lombok.Data;
-import lombok.Getter;
-
-/**
- * Created by me on 24.05.17.
- */
-
-
-public class TestApp {
+public class MockApp {
 
     private static String[] mas = new String[]{
             "firstApp",
             "secondApp",
             "thirdApp",
-//            "fourthApp",
-//            "fifthApp",
-//            "sixthApp",
-//            "seventhApp",
-//            "eighthApp",
-//            "ninthApp",
-//            "tenthApp"
     };
 
     public static String[] getMas() {

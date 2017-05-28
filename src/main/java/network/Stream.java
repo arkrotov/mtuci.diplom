@@ -1,16 +1,10 @@
 package network;
 
 import lombok.Data;
-import models.IP;
+import mocks.MockApp;
 
 import java.lang.reflect.Field;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Random;
-
-/**
- * Created by Me on 09.04.2017.
- */
+import java.util.*;
 
 @Data
 public class Stream {
@@ -35,6 +29,13 @@ public class Stream {
     private List<Integer> sizesOfDataFromServer = new ArrayList<>();
 
     // Экспериментальные данные
+
+    //Адресса клиент\сервер
+    //List <InetAddress> ipAddresses = new ArrayList<>();
+    private String firstIP;
+    private String secondIP;
+
+    //Порты клиент\сервер
 
     // Средний размер пакета со стороны клиента
     private double averageSizeOnTransportLayerFromClient;
@@ -104,7 +105,13 @@ public class Stream {
 
     public Stream(List<IP> flow) throws Exception {
 
-        testApp = TestApp.getMas()[new Random().nextInt(TestApp.getMas().length)];
+        testApp = MockApp.getMas()[new Random().nextInt(MockApp.getMas().length)];
+
+        //ipAddresses.add(flow.get(0).getIpPacket().dst_ip);
+        //ipAddresses.add(flow.get(0).getIpPacket().src_ip);
+
+        firstIP = flow.get(0).getIpPacket().src_ip.toString();
+        secondIP = flow.get(0).getIpPacket().dst_ip.toString();
 
         sizeOnTransportLayerFromServer = 0;
         sizeOnTransportLayerFromClient = 0;
@@ -115,6 +122,7 @@ public class Stream {
         int toClient = 3;
 
         for (IP ipPacket : flow) {
+
 
             if (ipPacket.isToMe()) {
 
@@ -185,42 +193,10 @@ public class Stream {
         return String.valueOf(result).equals("-0.0") ? 0 : result;
     }
 
-    @Override
-    public String toString() {
-        return "Stream{" +
-                "\nflowFromClient=" + flowFromClient +
-                "\n  flowFromServer=" + flowFromServer +
-                "\n  sizesOfSegmentsFromClient=" + sizesOfSegmentsFromClient +
-                "\n sizesOfSegmentsFromServer=" + sizesOfSegmentsFromServer +
-                "\n sizesOfDataFromClient=" + sizesOfDataFromClient +
-                "\n sizesOfDataFromServer=" + sizesOfDataFromServer +
-                "\n averageSizeOnTransportLayerFromClient=" + averageSizeOnTransportLayerFromClient +
-                "\n standardDeviationOfPacketSizeFromClient=" + standardDeviationOfPacketSizeFromClient +
-                "\n averageSizeOnTransportLayerFromServer=" + averageSizeOnTransportLayerFromServer +
-                "\n standardDeviationOfPacketSizeFromServer=" + standardDeviationOfPacketSizeFromServer +
-                "\n averageSizeDataOnTransportLayerFromClient=" + averageSizeDataOnTransportLayerFromClient +
-                "\n standardDeviationOfDataOnTransportLayerFromClient=" + standardDeviationOfDataOnTransportLayerFromClient +
-                "\n averageSizeDataOnTransportLayerFromServer=" + averageSizeDataOnTransportLayerFromServer +
-                "\n standardDeviationOfDataOnTransportLayerFromServer=" + standardDeviationOfDataOnTransportLayerFromServer +
-                "\n averageNumberOfDataPacketsFromClient=" + averageNumberOfDataPacketsFromClient +
-                "\n averageNumberOfDataPacketsFromServer=" + averageNumberOfDataPacketsFromServer +
-                "\n efficiencyOfClient=" + efficiencyOfClient +
-                "\n efficiencyOfServer=" + efficiencyOfServer +
-                "\n ratio=" + ratio +
-                "\n ratioOfData=" + ratioOfData +
-                "\n ratioOfNumberOfPackets=" + ratioOfNumberOfPackets +
-                "\n sizeOnTransportLayerFromClient=" + sizeOnTransportLayerFromClient +
-                "\n sizeDataOnTransportLayerFromClient=" + sizeDataOnTransportLayerFromClient +
-                "\n numberOfServingsFromClient=" + numberOfServingsFromClient +
-                "\n sizeOnTransportLayerFromServer=" + sizeOnTransportLayerFromServer +
-                "\n sizeDataOnTransportLayerFromServer=" + sizeDataOnTransportLayerFromServer +
-                "\n numberOfServingsFromServer=" + numberOfServingsFromServer +
-                "\n testApp='" + testApp + '\'' +
-                "}\n\n";
-    }
-
     public String toFile() {
-        return averageSizeOnTransportLayerFromClient +
+        return  firstIP +
+                "," + secondIP +
+                "," + averageSizeOnTransportLayerFromClient +
                 "," + standardDeviationOfPacketSizeFromClient +
                 "," + averageSizeOnTransportLayerFromServer +
                 "," + standardDeviationOfPacketSizeFromServer +
@@ -258,10 +234,8 @@ public class Stream {
     }
 
     public static void main(String[] args) {
-        int i = 0;
         for (String s : getNameFields()) {
-            System.out.println(i++ + " " + s);
+            System.out.println(s);
         }
-
     }
 }
