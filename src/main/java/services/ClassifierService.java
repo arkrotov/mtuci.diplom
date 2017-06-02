@@ -1,5 +1,6 @@
 package services;
 
+import weka.classifiers.Classifier;
 import weka.classifiers.Evaluation;
 import weka.classifiers.bayes.NaiveBayes;
 import weka.classifiers.evaluation.NominalPrediction;
@@ -14,6 +15,8 @@ import weka.core.Instances;
 import java.io.BufferedReader;
 import java.io.InputStream;
 import java.io.InputStreamReader;
+import java.util.ArrayList;
+import java.util.List;
 
 public class ClassifierService {
 
@@ -52,7 +55,7 @@ public class ClassifierService {
         return split;
     }
 
-    public static void main(String[] args) throws Exception {
+    public static void run () throws Exception {
 
         InputStream inputStream = ClassifierService.class.getClassLoader()
                 .getResourceAsStream("TestStreams.txt");
@@ -68,17 +71,17 @@ public class ClassifierService {
         Instances[] trainingSplits = split[0];
         Instances[] testingSplits = split[1];
 
-        weka.classifiers.Classifier[] models = {
-                new J48(),
-                new PART(),
-                new DecisionTable(),
-                new DecisionStump(),
-                new RandomForest(),
-                new NaiveBayes(),
-        };
 
 
-        for (weka.classifiers.Classifier model : models) {
+        List<Classifier> models = new ArrayList<>();
+
+        for (int i = 1; i < 500; i++) {
+            RandomForest randomForest = new RandomForest();
+            randomForest.setNumFeatures(i);
+        }
+
+
+        for (Classifier model : models) {
 
             try {
                 // Collect every group of predictions for current model in a FastVector

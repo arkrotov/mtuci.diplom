@@ -3,9 +3,14 @@ package mocks;
 public class MockApp {
 
     private static String[] mas = new String[]{
-            "firstApp",
-            "secondApp",
-            "thirdApp",
+            "Yandex",
+            "Google",
+            "VK",
+            "Appstore",
+            "Chess",
+            "Safari",
+            "IE"
+
     };
 
     public static String[] getMas() {

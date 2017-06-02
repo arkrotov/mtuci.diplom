@@ -1,20 +1,20 @@
-import services.FileService;
+import javafx.application.Application;
+import javafx.stage.Stage;
+import services.*;
 import jpcap.JpcapCaptor;
 import jpcap.packet.Packet;
 import jpcap.packet.TCPPacket;
 import network.IP;
-import services.CaptorService;
 import network.Stream;
 import mocks.MockApp;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
-import services.GroupService;
 
 import java.io.*;
 import java.util.ArrayList;
 import java.util.List;
 
 @SpringBootApplication
-public class Main {
+public class Main extends Application{
 
 
     private static boolean enable = true;
@@ -55,22 +55,34 @@ public class Main {
             GroupService.formFlow((TCPPacket) packet);
         }
 
+        GroupService.endGroup();
+
         System.out.printf("Итоговое количество потоков - %d\n", GroupService.getResultSize());
 
         List<List<IP>> resultGroupFlow = GroupService.getResultGroupFlow();
 
         List<Stream> streamList = new ArrayList<>();
 
-        FileWriter fileWriter = new FileWriter(new File("StreamInfo"));
+    //    FileWriter fileWriter = new FileWriter(new File("StreamInfo"));
+
         for (List<IP> ipList : resultGroupFlow) {
-            Stream e = new Stream(ipList);
-            streamList.add(e);
-            fileWriter.write(e.toString());
-            fileWriter.flush();
+              Stream e = new Stream(ipList);
+              streamList.add(e);
+              ScatterChartSample.setEntites(e);
+//            fileWriter.write(e.toString());
+//            fileWriter.flush();
         }
 
-        FileService.write("streams",
-                Stream.getNameFields(), MockApp.getMasToString(), streamList);
+      launch();
 
+    //    FileService.write("streams",
+        //        Stream.getNameFields(), MockApp.getMasToString(), streamList);
+
+       // ClassifierService.run();
+    }
+
+    @Override
+    public void start(Stage primaryStage) throws Exception {
+        new ScatterChartSample().start(primaryStage);
     }
 }

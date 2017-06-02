@@ -1,5 +1,7 @@
 package network;
 
+import jpcap.packet.IPPacket;
+import jpcap.packet.TCPPacket;
 import lombok.Data;
 import mocks.MockApp;
 
@@ -36,6 +38,7 @@ public class Stream {
     private String secondIP;
 
     //Порты клиент\сервер
+    private int dstPort;
 
     // Средний размер пакета со стороны клиента
     private double averageSizeOnTransportLayerFromClient;
@@ -105,6 +108,10 @@ public class Stream {
 
     public Stream(List<IP> flow) throws Exception {
 
+        TCPPacket ipPacket1 = (TCPPacket) flow.get(0).getIpPacket();
+        //System.out.println(ipPacket1.dst_port + " " + ipPacket1.src_port);
+        dstPort = ipPacket1.src_port;
+
         testApp = MockApp.getMas()[new Random().nextInt(MockApp.getMas().length)];
 
         //ipAddresses.add(flow.get(0).getIpPacket().dst_ip);
@@ -126,6 +133,7 @@ public class Stream {
 
             if (ipPacket.isToMe()) {
 
+         //       dstPort = ((TCPPacket) ipPacket.getIpPacket()).dst_port;
                 if (toClient != 1) {
                     numberOfServingsFromClient++;
                     toClient = 1;

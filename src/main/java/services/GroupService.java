@@ -28,6 +28,9 @@ public class GroupService {
         return resultGroupFlow.size();
     }
 
+    public static void endGroup() {
+        resultGroupFlow.addAll(groupFlow);
+    }
     // Формирование потока
     public static void formFlow(IPPacket currentPacket) {
 
