@@ -6,8 +6,8 @@ import jpcap.packet.Packet;
 import jpcap.packet.TCPPacket;
 import network.IP;
 import network.Stream;
-import mocks.MockApp;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
+import tests.ScatterChartSample;
 
 import java.io.*;
 import java.util.ArrayList;
@@ -68,7 +68,10 @@ public class Main extends Application{
         for (List<IP> ipList : resultGroupFlow) {
               Stream e = new Stream(ipList);
               streamList.add(e);
-              ScatterChartSample.setEntites(e);
+            String metricValue = String.valueOf(e.getAverageNumberOfDataPacketsFromClient());
+            String testApp = e.getTestApp();
+            String metric = "averageNumberOfDataPacketsFromClient";
+            ScatterChartSample.setEntites(metricValue, testApp, metric);
 //            fileWriter.write(e.toString());
 //            fileWriter.flush();
         }

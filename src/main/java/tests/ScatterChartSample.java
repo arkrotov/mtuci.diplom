@@ -1,6 +1,5 @@
-package services;
+package tests;
 
-import javafx.application.Application;
 import javafx.collections.ObservableList;
 import javafx.scene.Scene;
 import javafx.scene.chart.NumberAxis;
@@ -8,58 +7,55 @@ import javafx.scene.chart.ScatterChart;
 import javafx.scene.chart.XYChart;
 import javafx.stage.Stage;
 import mocks.MockApp;
-import network.Stream;
 
-import java.util.ArrayList;
 import java.util.HashMap;
-import java.util.List;
 import java.util.Map;
 
 
 public class ScatterChartSample {
 
-    private static Map<String, Map<Double,Integer>> map = new HashMap<>();
+    private static Map<String, Map<Double,Integer>> appToValueCountMap = new HashMap<>();
     private static double max = Double.MIN_VALUE;
     private static double min = Double.MAX_VALUE;
+    private static String metric;
 
-    public static void setEntites(Stream stream) {
+    public static void setEntites(String metricValue, String app, String metric) {
 
-        String testApp = stream.getTestApp();
-      //  int dstPort = stream.getDstPort();
+        Double value = Double.parseDouble(metricValue);
 
-        double averageSizeOnTransportLayerFromServer = stream.getAverageSizeOnTransportLayerFromServer();
-        if (max < averageSizeOnTransportLayerFromServer) max = averageSizeOnTransportLayerFromServer;
-        if (min > averageSizeOnTransportLayerFromServer) min = averageSizeOnTransportLayerFromServer;
+        if (max < value) max = value;
+        if (min > value) min = value;
 
-        System.out.println(testApp + " " + averageSizeOnTransportLayerFromServer);
-        Map<Double, Integer> integerIntegerMap = map.get(testApp);
+        System.out.println(app + " " + value);
+        Map<Double, Integer> valueToCountMap = appToValueCountMap.get(app);
 
-        if (integerIntegerMap == null) {
-            integerIntegerMap = new HashMap<>();
-            integerIntegerMap.put(averageSizeOnTransportLayerFromServer, 1);
-            map.put(testApp, integerIntegerMap);
+        if (valueToCountMap == null) {
+            valueToCountMap = new HashMap<>();
+            valueToCountMap.put(value, 1);
+            appToValueCountMap.put(app, valueToCountMap);
         } else {
-            integerIntegerMap.merge(averageSizeOnTransportLayerFromServer, 1, (a, b) -> (a + b));
+            valueToCountMap.merge(value, 1, (a, b) -> (a + b));
         }
 
-        System.out.println(map.hashCode() + " " + map.toString());
+        ScatterChartSample.metric = metric;
     }
 
 
 
+
     public void start(Stage stage) {
-       // stage.setTitle("Scatter Chart Sample");
-        System.out.println(max + " " + min);
+
         final NumberAxis xAxis = new NumberAxis(0, MockApp.getMas().length+1, 1);
-        final NumberAxis yAxis = new NumberAxis(0, Math.round(max) + 1, Math.round(min) - 1);
+        final NumberAxis yAxis = new NumberAxis((Math.round(min) - 1) < 0? 0: Math.round(min) - 1, Math.round(max) + 1, (max-min)/10);
         final ScatterChart<Number, Number> sc = new
                 ScatterChart<Number, Number>(xAxis, yAxis);
-        xAxis.setLabel("Age (years)");
-        yAxis.setLabel("Returns to date");
+
+        xAxis.setLabel("Application");
+        yAxis.setLabel(metric);
         sc.setTitle("Investment Overview");
 
         int count = 0;
-        for (Map.Entry<String, Map<Double, Integer>> stringMapEntry : map.entrySet()) {
+        for (Map.Entry<String, Map<Double, Integer>> stringMapEntry : appToValueCountMap.entrySet()) {
             XYChart.Series series = new XYChart.Series();
             series.setName(stringMapEntry.getKey());
 
@@ -92,7 +88,7 @@ public class ScatterChartSample {
             data.addAll(series);
         }
 
-        Scene scene = new Scene(sc, 500, 400);
+        Scene scene = new Scene(sc, 600, 600);
         stage.setScene(scene);
         stage.show();
 
