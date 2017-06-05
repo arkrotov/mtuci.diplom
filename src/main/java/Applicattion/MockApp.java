@@ -1,8 +1,11 @@
 package Applicattion;
 
+import lombok.Data;
+
+@Data
 public class MockApp {
 
-    private static String[] mas = new String[]{
+    private String[] mas = new String[]{
             "Yandex",
             "Google",
             "VK",
@@ -13,11 +16,7 @@ public class MockApp {
 
     };
 
-    public static String[] getMas() {
-        return mas;
-    }
-
-    public static String getMasToString() {
+    public String getMasToString() {
         StringBuilder sb = new StringBuilder();
 
         for (String ma : mas) {

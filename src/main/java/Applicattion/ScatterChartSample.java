@@ -44,7 +44,9 @@ public class ScatterChartSample {
 
     public void start(Stage stage) {
 
-        final NumberAxis xAxis = new NumberAxis(0, MockApp.getMas().length+1, 1);
+        MockApp apps = App.app.getDaoService().getApp();
+
+        final NumberAxis xAxis = new NumberAxis(0, apps.getMas().length+1, 1);
         final NumberAxis yAxis = new NumberAxis((Math.round(min) - 1) < 0? 0: Math.round(min) - 1, Math.round(max) + 1, (max-min)/10);
         final ScatterChart<Number, Number> sc = new
                 ScatterChart<Number, Number>(xAxis, yAxis);

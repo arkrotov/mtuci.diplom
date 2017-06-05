@@ -30,7 +30,7 @@ public class GroupService {
                         if (((TCPPacket) currentPacket).fin) {
                             flow.add(new TCP(currentPacket));
                             Stream stream = new Stream(flow);
-                            daoService.getGroupFlow().add(stream);
+                            daoService.getStreams().add(stream);
                             groupFlow.remove(flow);
                             if (classify) {
                                 ClassifierService.classify(stream);// TODO: Classifier add packet!

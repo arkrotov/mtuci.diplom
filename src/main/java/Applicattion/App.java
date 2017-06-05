@@ -13,7 +13,10 @@ public class App {
 
     public static boolean loadFromBase = false;
 
-    static App app;
+    public static App app;
+    private WebService webService;
+    private ClassifierService classifierService;
+    private StudyService studyService;
     private DaoService daoService;
 
     public static void main(String[] args) throws IOException {
@@ -22,6 +25,8 @@ public class App {
 
     private App() throws IOException {
         init();
+        webService = new WebService();
+        classifierService = new ClassifierService();
     }
 
 

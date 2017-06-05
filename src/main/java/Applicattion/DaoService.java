@@ -1,27 +1,27 @@
 package Applicattion;
 
 
+import lombok.Data;
 import lombok.Synchronized;
 
-import java.io.File;
-import java.io.FileWriter;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 
-
+@Data
 public class DaoService {
 
     final private List<Stream> streams;
+    final private MockApp app;
 
     @Synchronized
     public List<Stream> getStreams() {
         return streams;
     }
 
-
     public DaoService() {
         streams = new ArrayList<>();
+        app = new MockApp();
     }
 
     public void pull() throws IOException {
@@ -41,8 +41,8 @@ public class DaoService {
         }
 
 
-        FileService.write("TrainStreams", Stream.getNameFields(), MockApp.getMasToString(), trainStreams);
-        FileService.write("TestStreams", Stream.getNameFields(), MockApp.getMasToString(), testStreams);
+        FileService.write("TrainStreams", Stream.getNameFields(), app.getMasToString(), trainStreams);
+        FileService.write("TestStreams", Stream.getNameFields(), app.getMasToString(), testStreams);
     }
 
 

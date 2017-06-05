@@ -9,7 +9,6 @@ import java.util.*;
 @Data
 public class Stream {
 
-
     // Расчетные данные
 
     // Пакеты в потоке
@@ -106,11 +105,13 @@ public class Stream {
 
     public Stream(List<IP> flow) throws Exception {
 
+        DaoService daoService = App.app.getDaoService();
+        MockApp apps = daoService.getApp();
         TCPPacket ipPacket1 = (TCPPacket) flow.get(0).getIpPacket();
         //System.out.println(ipPacket1.dst_port + " " + ipPacket1.src_port);
         dstPort = ipPacket1.src_port;
 
-        testApp = MockApp.getMas()[new Random().nextInt(MockApp.getMas().length)];
+        testApp = apps.getMas()[new Random().nextInt(apps.getMas().length)];
 
         //ipAddresses.add(flow.get(0).getIpPacket().dst_ip);
         //ipAddresses.add(flow.get(0).getIpPacket().src_ip);
@@ -239,9 +240,4 @@ public class Stream {
         return nameFields;
     }
 
-    public static void main(String[] args) {
-        for (String s : getNameFields()) {
-            System.out.println(s);
-        }
-    }
 }

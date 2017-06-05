@@ -9,6 +9,8 @@ public class ClassifierService {
 
     public static void classify (Stream stream) throws Exception {
 
+        MockApp apps = App.app.getDaoService().getApp();
+
         Classifier classifier = StudyService.getInstance();
 
         Instance newInstance  = new DenseInstance(15);
@@ -17,7 +19,7 @@ public class ClassifierService {
 
         double v = classifier.classifyInstance(newInstance);
 
-        String app = MockApp.getMas()[(int) Math.round(v)];
+        String app = apps.getMas()[(int) Math.round(v)];
 
         WebService.show(stream, app);
     }
