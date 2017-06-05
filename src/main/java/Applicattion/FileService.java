@@ -1,6 +1,4 @@
-package services;
-
-import network.Stream;
+package Applicattion;
 
 import java.io.File;
 import java.io.FileWriter;
@@ -12,7 +10,7 @@ public class FileService {
 
     public static void write(String relation, Object[] attributions, String classes, List<Stream> masOfData) throws IOException {
 
-        File file = new File("src/main/resources/TestStreams.txt");
+        File file = new File("src/main/resources/" + relation + ".txt");
 
         FileWriter fileWriter = new FileWriter(file);
 

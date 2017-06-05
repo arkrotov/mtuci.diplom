@@ -1,4 +1,4 @@
-package tests;
+package Applicattion;
 
 import javafx.collections.ObservableList;
 import javafx.scene.Scene;
@@ -6,7 +6,6 @@ import javafx.scene.chart.NumberAxis;
 import javafx.scene.chart.ScatterChart;
 import javafx.scene.chart.XYChart;
 import javafx.stage.Stage;
-import mocks.MockApp;
 
 import java.util.HashMap;
 import java.util.Map;

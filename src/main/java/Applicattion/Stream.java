@@ -1,9 +1,7 @@
-package network;
+package Applicattion;
 
-import jpcap.packet.IPPacket;
 import jpcap.packet.TCPPacket;
 import lombok.Data;
-import mocks.MockApp;
 
 import java.lang.reflect.Field;
 import java.util.*;

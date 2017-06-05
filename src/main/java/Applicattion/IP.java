@@ -1,4 +1,4 @@
-package network;
+package Applicattion;
 
 import jpcap.packet.IPPacket;
 import lombok.Data;
@@ -18,12 +18,12 @@ public class IP {
     private IPPacket ipPacket;
     private Timestamp timestamp;
 
-    //TODO: Уйти от костыля  throw new Exception("Нельзя вызывать метод у класса IP");
+    //TODO: Уйти от костыля  throw new Exception("Нельзя вызывать метод у класса Applicattion.IP");
     public int getTransportDataLength () throws Exception {
-        throw new Exception("Нельзя вызывать метод у класса IP");
+        throw new Exception("Нельзя вызывать метод у класса Applicattion.IP");
     }
     public int getTransportHeaderLength () throws Exception {
-        throw new Exception("Нельзя вызывать метод у класса IP");
+        throw new Exception("Нельзя вызывать метод у класса Applicattion.IP");
     }
 
     public boolean isToMe () {
