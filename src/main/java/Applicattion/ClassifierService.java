@@ -15,8 +15,6 @@ public class ClassifierService {
 
         Instance newInstance  = new DenseInstance(15);
 
-        // Сюда передается поток, долго писать обработчик..
-
         double v = classifier.classifyInstance(newInstance);
 
         String app = apps.getMas()[(int) Math.round(v)];

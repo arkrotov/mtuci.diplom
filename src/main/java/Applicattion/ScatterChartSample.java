@@ -18,7 +18,7 @@ public class ScatterChartSample {
     private static double min = Double.MAX_VALUE;
     private static String metric;
 
-    public static void setEntites(String metricValue, String app, String metric) {
+    public static void setEntities(String metricValue, String app, String metric) {
 
         Double value = Double.parseDouble(metricValue);
 

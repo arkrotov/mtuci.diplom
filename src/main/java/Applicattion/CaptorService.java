@@ -48,11 +48,6 @@ public class CaptorService implements Runnable{
 
                 Packet packet = instance.getPacket();
 
-//                if (count % 100 == 0) {
-//                    System.out.printf("Обработано пакетов - %d, сформировано потоков - %d\n",
-//                            count, GroupService.getResultSize());
-//                }
-
                 if (packet == null || !(packet instanceof TCPPacket)) {
                     continue;
                 }

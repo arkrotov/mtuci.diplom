@@ -108,13 +108,9 @@ public class Stream {
         DaoService daoService = App.app.getDaoService();
         MockApp apps = daoService.getApp();
         TCPPacket ipPacket1 = (TCPPacket) flow.get(0).getIpPacket();
-        //System.out.println(ipPacket1.dst_port + " " + ipPacket1.src_port);
         dstPort = ipPacket1.src_port;
 
         testApp = apps.getMas()[new Random().nextInt(apps.getMas().length)];
-
-        //ipAddresses.add(flow.get(0).getIpPacket().dst_ip);
-        //ipAddresses.add(flow.get(0).getIpPacket().src_ip);
 
         firstIP = flow.get(0).getIpPacket().src_ip.toString();
         secondIP = flow.get(0).getIpPacket().dst_ip.toString();

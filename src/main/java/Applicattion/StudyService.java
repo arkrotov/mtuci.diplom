@@ -19,10 +19,10 @@ public class StudyService {
 
         if (instance == null) {
 
-            InputStream trainInputStream = ClassifierService.class.getClassLoader()
+            InputStream trainInputStream = StudyService.class.getClassLoader()
                     .getResourceAsStream("TestStreams.txt");
 
-            InputStream testInputStream = ClassifierService.class.getClassLoader()
+            InputStream testInputStream = StudyService.class.getClassLoader()
                     .getResourceAsStream("TestStreams.txt");
 
             BufferedReader trainFile = new BufferedReader(new InputStreamReader(trainInputStream));

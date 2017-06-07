@@ -4,10 +4,6 @@ import lombok.Data;
 
 import java.io.IOException;
 
-/**
- * Created by me on 05.06.17.
- */
-
 @Data
 public class App {
 

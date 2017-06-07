@@ -6,14 +6,16 @@ import lombok.Data;
 public class MockApp {
 
     private String[] mas = new String[]{
-            "Yandex",
-            "Google",
+            "Skype",
             "VK",
-            "Appstore",
-            "Chess",
-            "Safari",
-            "IE"
-
+            "Google Play",
+            "YouTube",
+            "Google Chrome",
+            "Instagram",
+            "Shazam",
+            "Google Maps",
+            "Twitter",
+            "HearthStone"
     };
 
     public String getMasToString() {
@@ -24,7 +26,6 @@ public class MockApp {
         }
 
         sb.delete(sb.lastIndexOf(","), sb.lastIndexOf(" "));
-
 
         return sb.toString();
     }
